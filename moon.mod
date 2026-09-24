@@ -19,7 +19,7 @@ repository = "https://github.com/sujy123456/project_2"
 
 license = "Apache-2.0"
 
-keywords = ["food-bank", "inventory", "allocation", "simulation"]
+keywords = [ "food-bank", "inventory", "allocation", "simulation" ]
 
 preferred_target = "wasm"
 
