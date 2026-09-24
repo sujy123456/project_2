@@ -1,4 +1,4 @@
-# PantryFlow examples
+# PantryFlow 社区食品库存调度示例
 
 本目录的所有数据均为虚构示例，仅用于演示计划、风险告警和损耗模拟。
 

@@ -19,8 +19,8 @@ repository = "https://github.com/sujy123456/project_2"
 
 license = "Apache-2.0"
 
-keywords = [ "food-bank", "inventory", "allocation", "simulation" ]
+keywords = [ "community", "food-inventory", "allocation", "simulation" ]
 
 preferred_target = "wasm"
 
-description = "Explainable allocation and loss simulation for anonymous food-bank inventory."
+description = "Explainable allocation and loss simulation for anonymous community food inventory."
