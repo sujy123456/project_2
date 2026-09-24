@@ -15,7 +15,7 @@ fn audit_sample_demand() -> DemandLine {
 }
 
 fn audit_plan_for(allocations : Array[Allocation]) -> AllocationPlan {
-  { allocations, issues: [], metrics: { total_received: Quantity::zero(), total_allocated: Quantity::zero(), total_expired: Quantity::zero(), total_unallocated: Quantity::zero(), demand_requested: Quantity::zero(), demand_fulfilled: Quantity::zero(), demand_minimum_met: 0, demand_minimum_total: 0 }, generated_on: Day::new(0), policy_id: "test" }
+  { created_on: Day::new(0), policy: PolicyProfile::default(), allocations, issues: [], metrics: PlanMetrics::empty() }
 }
 
 test "audit accepts a feasible allocation" {
@@ -31,5 +31,5 @@ test "audit detects capacity and demand oversupply" {
 
 test "audit detects expired deliveries" {
   let report = audit_plan(audit_plan_for([audit_sample_allocation(500, 3)]), [audit_sample_lot()], [audit_sample_site()], [audit_sample_demand()])
-  assert_eq(report.findings[0].code, DeliveryAfterExpiry)
+  assert_true(report.findings[0].code == DeliveryAfterExpiry)
 }
