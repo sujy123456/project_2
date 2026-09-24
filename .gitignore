@@ -4,3 +4,10 @@ target/
 target
 .mooncakes/
 .moonagent/
+pkg.generated.mbti
+pantryflow-example.md
+.githooks/
+.github/workflows/copilot-setup-steps.yml
+pantryflow.mbt
+pantryflow_test.mbt
+pantryflow_wbtest.mbt

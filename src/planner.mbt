@@ -1,6 +1,6 @@
+///|
 /// Greedy, explainable allocation planner.  The planner chooses the best
 /// eligible lot for each demand line and preserves every scoring decision.
-
 pub fn lot_index_by_id(lots : Array[FoodLot], id : String) -> Int {
   let mut index = 0
   while index < lots.length() {
@@ -12,6 +12,7 @@ pub fn lot_index_by_id(lots : Array[FoodLot], id : String) -> Int {
   -1
 }
 
+///|
 pub fn demand_index_by_id(demands : Array[DemandLine], id : String) -> Int {
   let mut index = 0
   while index < demands.length() {
@@ -23,6 +24,7 @@ pub fn demand_index_by_id(demands : Array[DemandLine], id : String) -> Int {
   -1
 }
 
+///|
 pub fn total_quantity_of_lots(lots : Array[FoodLot]) -> Quantity {
   let mut total = Quantity::zero()
   let mut index = 0
@@ -33,6 +35,7 @@ pub fn total_quantity_of_lots(lots : Array[FoodLot]) -> Quantity {
   total
 }
 
+///|
 pub fn total_quantity_of_demands(demands : Array[DemandLine]) -> Quantity {
   let mut total = Quantity::zero()
   let mut index = 0
@@ -43,6 +46,7 @@ pub fn total_quantity_of_demands(demands : Array[DemandLine]) -> Quantity {
   total
 }
 
+///|
 pub fn initial_quantities_lots(lots : Array[FoodLot]) -> Array[Quantity] {
   let values : Array[Quantity] = []
   let mut index = 0
@@ -53,7 +57,10 @@ pub fn initial_quantities_lots(lots : Array[FoodLot]) -> Array[Quantity] {
   values
 }
 
-pub fn initial_quantities_demands(demands : Array[DemandLine]) -> Array[Quantity] {
+///|
+pub fn initial_quantities_demands(
+  demands : Array[DemandLine],
+) -> Array[Quantity] {
   let values : Array[Quantity] = []
   let mut index = 0
   while index < demands.length() {
@@ -63,7 +70,11 @@ pub fn initial_quantities_demands(demands : Array[DemandLine]) -> Array[Quantity
   values
 }
 
-pub fn initial_site_capacity(sites : Array[DistributionSite], zone : StorageZone) -> Array[Quantity] {
+///|
+pub fn initial_site_capacity(
+  sites : Array[DistributionSite],
+  zone : StorageZone,
+) -> Array[Quantity] {
   let values : Array[Quantity] = []
   let mut index = 0
   while index < sites.length() {
@@ -73,6 +84,7 @@ pub fn initial_site_capacity(sites : Array[DistributionSite], zone : StorageZone
   values
 }
 
+///|
 pub fn site_index_by_id(sites : Array[DistributionSite], id : String) -> Int {
   let mut index = 0
   while index < sites.length() {
@@ -84,6 +96,7 @@ pub fn site_index_by_id(sites : Array[DistributionSite], id : String) -> Int {
   -1
 }
 
+///|
 pub fn capacity_available(
   ambient : Array[Quantity],
   chilled : Array[Quantity],
@@ -102,6 +115,7 @@ pub fn capacity_available(
   }
 }
 
+///|
 pub fn reduce_capacity(
   ambient : Array[Quantity],
   chilled : Array[Quantity],
@@ -112,13 +126,16 @@ pub fn reduce_capacity(
 ) -> Unit {
   if site_index >= 0 {
     match zone {
-      Ambient => ambient[site_index] = ambient[site_index].subtract_floor(amount)
-      Chilled => chilled[site_index] = chilled[site_index].subtract_floor(amount)
+      Ambient =>
+        ambient[site_index] = ambient[site_index].subtract_floor(amount)
+      Chilled =>
+        chilled[site_index] = chilled[site_index].subtract_floor(amount)
       Frozen => frozen[site_index] = frozen[site_index].subtract_floor(amount)
     }
   }
 }
 
+///|
 pub fn best_lot_for_demand(
   lots : Array[FoodLot],
   remaining : Array[Quantity],
@@ -132,7 +149,8 @@ pub fn best_lot_for_demand(
   let mut index = 0
   while index < lots.length() {
     let lot = lots[index]
-    if !remaining[index].is_zero() && allocation_is_feasible(lot, demand, site, on, policy) {
+    if !remaining[index].is_zero() &&
+      allocation_is_feasible(lot, demand, site, on, policy) {
       let score = allocation_score(lot, demand, site, on, policy)
       if score < best_score {
         best_score = score
@@ -144,10 +162,16 @@ pub fn best_lot_for_demand(
   best_index
 }
 
-pub fn allocation_id(lot : FoodLot, demand : DemandLine, ordinal : Int) -> String {
+///|
+pub fn allocation_id(
+  lot : FoodLot,
+  demand : DemandLine,
+  ordinal : Int,
+) -> String {
   lot.id + "::" + demand.id + "::" + ordinal.to_string()
 }
 
+///|
 pub fn allocate_demand(
   lots : Array[FoodLot],
   sites : Array[DistributionSite],
@@ -169,12 +193,20 @@ pub fn allocate_demand(
   let mut unfilled = demand.requested
   let mut ordinal = ordinal_start
   while !unfilled.is_zero() {
-    let lot_index = best_lot_for_demand(lots, lot_remaining, demand, site, on, policy)
+    let lot_index = best_lot_for_demand(
+      lots, lot_remaining, demand, site, on, policy,
+    )
     if lot_index < 0 {
       return allocations
     }
     let lot = lots[lot_index]
-    let capacity = capacity_available(site_ambient, site_chilled, site_frozen, site_index, lot.storage)
+    let capacity = capacity_available(
+      site_ambient,
+      site_chilled,
+      site_frozen,
+      site_index,
+      lot.storage,
+    )
     let amount = lot_remaining[lot_index].min(unfilled).min(capacity)
     if amount.is_zero() {
       lot_remaining[lot_index] = Quantity::zero()
@@ -191,7 +223,14 @@ pub fn allocate_demand(
         score,
       })
       lot_remaining[lot_index] = lot_remaining[lot_index].subtract_floor(amount)
-      reduce_capacity(site_ambient, site_chilled, site_frozen, site_index, lot.storage, amount)
+      reduce_capacity(
+        site_ambient,
+        site_chilled,
+        site_frozen,
+        site_index,
+        lot.storage,
+        amount,
+      )
       unfilled = unfilled.subtract_floor(amount)
       ordinal = ordinal + 1
     }
@@ -199,7 +238,11 @@ pub fn allocate_demand(
   allocations
 }
 
-pub fn append_allocations(target : Array[Allocation], source : Array[Allocation]) -> Unit {
+///|
+pub fn append_allocations(
+  target : Array[Allocation],
+  source : Array[Allocation],
+) -> Unit {
   let mut index = 0
   while index < source.length() {
     target.push(source[index])
@@ -207,7 +250,11 @@ pub fn append_allocations(target : Array[Allocation], source : Array[Allocation]
   }
 }
 
-pub fn quantity_allocated_to_demand(allocations : Array[Allocation], demand_id : String) -> Quantity {
+///|
+pub fn quantity_allocated_to_demand(
+  allocations : Array[Allocation],
+  demand_id : String,
+) -> Quantity {
   let mut total = Quantity::zero()
   let mut index = 0
   while index < allocations.length() {
@@ -219,6 +266,7 @@ pub fn quantity_allocated_to_demand(allocations : Array[Allocation], demand_id :
   total
 }
 
+///|
 pub fn quantity_allocated(allocations : Array[Allocation]) -> Quantity {
   let mut total = Quantity::zero()
   let mut index = 0
@@ -229,6 +277,7 @@ pub fn quantity_allocated(allocations : Array[Allocation]) -> Quantity {
   total
 }
 
+///|
 pub fn metrics_for_plan(
   lots : Array[FoodLot],
   demands : Array[DemandLine],
@@ -239,22 +288,27 @@ pub fn metrics_for_plan(
   let metrics = PlanMetrics::empty()
   metrics.total_received = total_quantity_of_lots(lots)
   metrics.total_allocated = quantity_allocated(allocations)
-  metrics.total_unallocated = metrics.total_received.subtract_floor(metrics.total_allocated)
+  metrics.total_unallocated = metrics.total_received.subtract_floor(
+    metrics.total_allocated,
+  )
   metrics.demand_requested = total_quantity_of_demands(demands)
   metrics.demand_fulfilled = metrics.total_allocated
   let mut demand_index = 0
   while demand_index < demands.length() {
     metrics.demand_minimum_total = metrics.demand_minimum_total + 1
-    if quantity_allocated_to_demand(allocations, demands[demand_index].id).grams >= demands[demand_index].minimum.grams {
+    if quantity_allocated_to_demand(allocations, demands[demand_index].id).grams >=
+      demands[demand_index].minimum.grams {
       metrics.demand_minimum_met = metrics.demand_minimum_met + 1
     }
     demand_index = demand_index + 1
   }
   let mut lot_index = 0
   while lot_index < lots.length() {
-    if lots[lot_index].urgency(on, policy.critical_days, policy.soon_days) == Critical {
+    if lots[lot_index].urgency(on, policy.critical_days, policy.soon_days) ==
+      Critical {
       metrics.critical_lots_total = metrics.critical_lots_total + 1
-      if lots[lot_index].quantity.grams > remaining_for_lot(lots[lot_index], allocations).grams {
+      if lots[lot_index].quantity.grams >
+        remaining_for_lot(lots[lot_index], allocations).grams {
         metrics.critical_lots_allocated = metrics.critical_lots_allocated + 1
       }
     }
@@ -263,7 +317,11 @@ pub fn metrics_for_plan(
   metrics
 }
 
-pub fn remaining_for_lot(lot : FoodLot, allocations : Array[Allocation]) -> Quantity {
+///|
+pub fn remaining_for_lot(
+  lot : FoodLot,
+  allocations : Array[Allocation],
+) -> Quantity {
   let mut allocated = Quantity::zero()
   let mut index = 0
   while index < allocations.length() {
@@ -275,6 +333,7 @@ pub fn remaining_for_lot(lot : FoodLot, allocations : Array[Allocation]) -> Quan
   lot.quantity.subtract_floor(allocated)
 }
 
+///|
 pub fn plan_allocations(
   lots : Array[FoodLot],
   sites : Array[DistributionSite],
@@ -294,16 +353,8 @@ pub fn plan_allocations(
     let demand = demands[demand_index]
     if !has_error_for(issues, demand.id) {
       let made = allocate_demand(
-        lots,
-        sites,
-        demand,
-        lot_remaining,
-        site_ambient,
-        site_chilled,
-        site_frozen,
-        on,
-        policy,
-        ordinal,
+        lots, sites, demand, lot_remaining, site_ambient, site_chilled, site_frozen,
+        on, policy, ordinal,
       )
       ordinal = ordinal + made.length()
       append_allocations(allocations, made)
