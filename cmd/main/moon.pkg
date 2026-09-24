@@ -1,0 +1,5 @@
+import {
+  "sujy123456/pantryflow/src" @pantryflow,
+}
+
+pkgtype(kind: "executable")
