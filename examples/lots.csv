@@ -1,0 +1,8 @@
+id,category,storage,received_day,expires_day,grams,state,reference,notes
+apple-a,produce,ambient,0,2,18000,available,example,fictional apples
+bread-a,bakery,ambient,0,1,9000,available,example,fictional bread
+milk-a,dairy,chilled,0,3,12000,available,example,fictional milk
+beans-a,protein,ambient,0,30,24000,available,example,fictional beans
+meal-a,prepared_meal,chilled,0,1,7000,available,example,fictional meals
+rice-a,shelf_stable,ambient,0,180,40000,available,example,fictional rice
+formula-a,infant_nutrition,ambient,0,90,4000,available,example,fictional formula

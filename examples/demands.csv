@@ -1,0 +1,8 @@
+id,site_id,category,requested_grams,minimum_grams,delivery_day,priority
+north-produce,north,produce,12000,9000,1,5
+north-dairy,north,dairy,8000,5000,1,5
+north-meals,north,prepared_meal,4000,2000,1,5
+east-bakery,east,bakery,8000,5000,1,4
+east-protein,east,protein,10000,7000,2,4
+west-shelf,west,shelf_stable,18000,10000,2,2
+west-infant,west,infant_nutrition,3000,2000,2,2

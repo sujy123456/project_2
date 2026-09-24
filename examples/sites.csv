@@ -1,0 +1,4 @@
+id,name,priority,ambient_grams,chilled_grams,frozen_grams,accepts_prepared_meals
+north,North community pantry,5,50000,18000,0,true
+east,East family centre,4,40000,8000,0,false
+west,West outreach point,2,16000,3000,0,true
